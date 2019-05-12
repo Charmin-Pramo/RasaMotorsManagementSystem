@@ -19,7 +19,8 @@ namespace RasaMotorsManagementSystem.JobCard
             InitializeComponent();
         }
 
-        public static SqlConnection con = new SqlConnection(@"Data Source=CHARMINPC\SQLEXPRESS;Initial Catalog=ServiceCenter;Integrated Security=True");
+        //public static SqlConnection con = new SqlConnection("Data Source=DESKTOP-T0HOCLV;Initial Catalog=ServiceCenterManagementDB;Integrated Security=True");
+        public static SqlConnection con = new SqlConnection("Data Source=DESKTOP-T0HOCLV;Initial Catalog=ServiceCenterManagementDB;Integrated Security=True");
 
         assignJobclass obj = new assignJobclass();
 
@@ -29,6 +30,9 @@ namespace RasaMotorsManagementSystem.JobCard
             new searchJob().Show();
             this.Close();
         }
+
+
+       
 
         public void fillcombo()
         {
@@ -60,7 +64,7 @@ namespace RasaMotorsManagementSystem.JobCard
             con.Open();
             SqlCommand cmd = con.CreateCommand();
             cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "select V.vehiId AS 'vid',V.vehiTyp AS 'vtyp',V.vehiNo as 'vno',C.cusName as 'cnme' FROM vehicles V, customer C WHERE C.cusId=V.custId";
+            cmd.CommandText = "select V.VehicleId AS 'vid',V.Type AS 'vtyp',V.VehicleNo as 'vno',C.Name as 'cnme' FROM VehDetails V, CusDetails C WHERE C.CustomerId=V.CustomerID";
             //cmd.CommandText = "select V.vehiId,V.vehiTyp,C.cusName FROM vehicles V,customer C WHERE C.cusId = V.custId";
             cmd.ExecuteNonQuery();
             DataTable dt = new DataTable();
@@ -87,7 +91,7 @@ namespace RasaMotorsManagementSystem.JobCard
             SqlCommand cmd = con.CreateCommand();
             cmd.CommandType = CommandType.Text;
             //select V.vehiId,V.vehiTyp,C.cusName FROM vehicles V, customer C WHERE C.cusId = V.custId
-            cmd.CommandText = "select V.vehiId AS 'vid',V.vehiTyp AS 'vtyp',C.cusName AS 'cnme' FROM vehicles V, customer C WHERE C.cusId=V.custId AND V.vehiNo='" + cmbVno.SelectedItem.ToString() + "'";
+            cmd.CommandText = "select V.VehicleId AS 'vid',V.Type AS 'vtyp',V.VehicleNo as 'vno',C.Name as 'cnme' FROM VehDetails V, CusDetails C WHERE C.CustomerId=V.CustomerID AND V.VehicleNo='" + cmbVno.SelectedItem.ToString() + "'";
             cmd.ExecuteNonQuery();
             DataTable dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -206,10 +210,12 @@ namespace RasaMotorsManagementSystem.JobCard
                 if (cmbVno.Text != "" || txtCusName.Text != "")
                 {
                     // obj.vehicleNo = txtVehicleNo.Text;
+                    obj.vehicleNo = cmbVno.Text;
                     obj.jobOne = comboJone.Text;
                     obj.jobTwo = comboJtwo.Text;
                     obj.jobThree = comboJthree.Text;
                     obj.predictPrice = float.Parse(txtPdctPrc.Text);
+                    
 
 
                     bool success = obj.InsertJob(obj);
@@ -243,7 +249,7 @@ namespace RasaMotorsManagementSystem.JobCard
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Please Select a Job!");
             }
         }
 
@@ -251,6 +257,11 @@ namespace RasaMotorsManagementSystem.JobCard
         {
             new createJob().Show();
             this.Close();
+        }
+
+        private void cmbVno_KeyPress(object sender, KeyPressEventArgs e)
+        {
+           
         }
     }
 }
